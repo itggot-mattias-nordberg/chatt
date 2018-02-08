@@ -13,35 +13,32 @@
 		db = SQLite3::Database.new("chatt.sqlite") 
 		username = params["username"] 
 		password = params["password"]
-		accounts = db.execute("SELECT * FROM users WHERE username=?", username)
+		accounts = db.execute("SELECT * FROM users WHERE username=?", [username])
 		account_password = BCrypt::Password.new(accounts[0][2])
-
+		byebug
 		if account_password == password
 			result = db.execute("SELECT id FROM users WHERE username=?", [username]) 
 			session[:id] = accounts[0][0] 
-			banan = session[:id]
-			p banan
+			session[:username] = accounts[0][1]
 			session[:login] = true 
 		elsif password == nil
 			redirect("/error")
 		else
 			session[:login] = false
 		end
-
-		apple = "hej"
-
-		byebug
-		redirect('/users/asd')
+	
+		redirect('/users/'+session[:id].to_s)
 	end
 
 	get '/users/:id' do
 		peter = params[:id]
-		slim(:login, locals:{peter:peter})
+		slim(:login, locals:{session:session})
 	end
 
 	get '/register' do
 		slim(:register) 
 	end
+
 
 	post '/register' do
 		db = SQLite3::Database.new('chatt.sqlite')
