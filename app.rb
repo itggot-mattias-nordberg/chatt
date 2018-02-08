@@ -1,4 +1,4 @@
-class App < Sinatra::Base
+ 	class App < Sinatra::Base
 	enable :sessions
 	get '/' do
 		"Hello, Grillkorv!"
@@ -9,6 +9,7 @@ class App < Sinatra::Base
          
 
 	post '/login' do
+
 		db = SQLite3::Database.new("chatt.sqlite") 
 		username = params["username"] 
 		password = params["password"]
@@ -18,17 +19,24 @@ class App < Sinatra::Base
 		if account_password == password
 			result = db.execute("SELECT id FROM users WHERE username=?", [username]) 
 			session[:id] = accounts[0][0] 
+			banan = session[:id]
+			p banan
 			session[:login] = true 
 		elsif password == nil
 			redirect("/error")
 		else
 			session[:login] = false
 		end
-		redirect('/users')
+
+		apple = "hej"
+
+		byebug
+		redirect('/users/asd')
 	end
 
-	get '/users' do
-		slim(:login)
+	get '/users/:id' do
+		peter = params[:id]
+		slim(:login, locals:{peter:peter})
 	end
 
 	get '/register' do
